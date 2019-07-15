@@ -1,13 +1,23 @@
-/*!
- * @license
- * 
- * dhtmlxGantt v.5.0.5 Stardard
- * This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
- * 
- * (c) Dinamenta, UAB.
- * 
- */
-/******/ (function(modules) { // webpackBootstrap
+/*
+@license
+
+dhtmlxGantt v.6.1.7 Standard
+This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
+
+(c) Dinamenta, UAB.
+
+*/
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -45,12 +55,32 @@
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -66,35 +96,42 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/codebase/sources/";
+/******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./sources/ext/smart_rendering.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 23:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(24);
-
-
-/***/ }),
-
-/***/ 24:
+/***/ "./sources/ext/smart_rendering.js":
+/*!****************************************!*\
+  !*** ./sources/ext/smart_rendering.js ***!
+  \****************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
 gantt.config.smart_rendering = true;
 
 gantt._smart_render = {
 	getViewPort: function(){
-		var timelineSize = gantt.$ui.getView("timeline").getSize();
+
+		var timeline = gantt.$ui.getView("timeline");
+		var grid = gantt.$ui.getView("grid");
+		var view = gantt.$layout;
+		if (timeline && timeline.isVisible()) {
+			view = timeline;
+		} else if (grid && grid.isVisible()) {
+			view = grid;
+		}
+
+		var viewSize = view.getSize();
 		var scrollPos = gantt.getScrollState();
 
 		return {
 			y: scrollPos.y,
-			y_end: scrollPos.y + timelineSize.y
+			y_end: scrollPos.y + viewSize.y
 		};
 	},
 	getScrollSizes: function(){
@@ -107,11 +144,15 @@ gantt._smart_render = {
 		return !!(item.y < viewPort.y_end && item.y_end > viewPort.y);
 	},
 
-	isTaskDisplayed: function(id){
+	isTaskDisplayed: function(id, task){
+		if(gantt.$keyboardNavigation && gantt.$keyboardNavigation.dispatcher.isTaskFocused(id)){
+			return true;
+		}
+
 		return this.isInViewPort(this.getTaskPosition(id), this.getViewPort());
 	},
-	isLinkDisplayed: function(id){
-		return this.isInViewPort(this.getLinkPosition(id), this.getViewPort());
+	isLinkDisplayed: function(id, link){
+		return this.isInViewPort(this.getLinkPosition(id, link), this.getViewPort());
 	},
 	getTaskPosition: function(id){
 		var y = gantt.getTaskTop(id);
@@ -120,8 +161,7 @@ gantt._smart_render = {
 			y_end: y + gantt.config.row_height
 		};
 	},
-	getLinkPosition: function(id){
-		var link = gantt.getLink(id);
+	getLinkPosition: function(id, link){
 		var from_pos = gantt.getTaskTop(link.source),
 			to_pos = gantt.getTaskTop(link.target);
 
@@ -147,15 +187,29 @@ gantt._smart_render = {
 		return visibleIds;
 	},
 	_redrawItems: function(renderers, visibleItems){
+		var shouldBeVisible = {};
+		for(var t = 0; t < visibleItems.length; t++){
+			shouldBeVisible[visibleItems[t].id] = true;
+		}
+		var alreadyVisible = {};
+
 		for(var r = 0; r < renderers.length; r++){
 			var render = renderers[r];
 
 			for(var i in render.rendered){
-				render.hide(i);
+				if(!shouldBeVisible[i]){
+					render.hide(i);
+				}else{
+					var node = render.rendered[i];
+					if(node && node.parentNode) {
+						alreadyVisible[i] = true;
+					}
+				}
 			}
 
 			for(var t = 0; t < visibleItems.length; t++){
-				render.restore(visibleItems[t]);
+				if(!alreadyVisible[visibleItems[t].id])
+					render.restore(visibleItems[t]);
 			}
 		}
 	},
@@ -174,10 +228,10 @@ gantt._smart_render = {
 	},
 	_getVisibleLinks: function(){
 		var visible_links = [];
-		var links = gantt.getLinks();
+		var links = gantt.$data.linksStore.getIndexRange();
 
 		for(var i = 0; i < links.length; i++){
-			if(this.isLinkDisplayed(links[i].id)){
+			if(this.isLinkDisplayed(links[i].id, links[i])){
 				visible_links.push(links[i]);
 			}
 		}
@@ -211,9 +265,14 @@ gantt._smart_render = {
 		var taskRenderer = layers.getDataRender("task");
 		var linkRenderer = layers.getDataRender("link");
 
-		this._redrawItems(taskRenderer.getLayers(), visibleTasks);
+		this._redrawTasks(taskRenderer.getLayers(), visibleTasks);
 		this._redrawItems(linkRenderer.getLayers(), visibleLinks);
 		gantt.callEvent("onSmartRender", []);
+	},
+
+	// hook to override from key nav
+	_redrawTasks: function(layers, visibleTasks){
+		this._redrawItems(layers, visibleTasks);
 	},
 
 	cached:{},
@@ -329,7 +388,7 @@ gantt.attachEvent("onGanttScroll", function(oldLeft, oldTop, left, top){
 
 		if((oldTop != top) || (oldLeft == left)){
 
-			var visibleTasks = gantt._smart_render.getRange();
+			//var visibleTasks = gantt._smart_render.getRange();
 			gantt._smart_render.updateRender();
 
 		}
@@ -347,19 +406,19 @@ gantt.attachEvent("onDataRender", function() {
 	var attachOnce = gantt.attachEvent("onGanttReady", function(){
 		var layers = gantt.$services.getService("layers");
 		var taskRenderer = layers.getDataRender("task");
-		taskRenderer.filters.push(function(id){
+		taskRenderer.filters.push(function(id, task){
 			if(!gantt.config.smart_rendering)
 				return true;
 			else
-				return !!gantt._smart_render.isTaskDisplayed(id);
+				return !!gantt._smart_render.isTaskDisplayed(id, task);
 		});
 
 		var linkRenderer = layers.getDataRender("link");
-		linkRenderer.filters.push(function(id){
+		linkRenderer.filters.push(function(id, link){
 			if(!gantt.config.smart_rendering)
 				return true;
 			else
-				return !!gantt._smart_render.isLinkDisplayed(id);
+				return !!gantt._smart_render.isLinkDisplayed(id, link);
 		});
 
 		gantt.detachEvent(attachOnce);
@@ -371,3 +430,4 @@ gantt.attachEvent("onDataRender", function() {
 /***/ })
 
 /******/ });
+});

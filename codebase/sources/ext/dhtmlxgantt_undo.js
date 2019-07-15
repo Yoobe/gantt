@@ -1,13 +1,23 @@
-/*!
- * @license
- * 
- * dhtmlxGantt v.5.0.5 Stardard
- * This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
- * 
- * (c) Dinamenta, UAB.
- * 
- */
-/******/ (function(modules) { // webpackBootstrap
+/*
+@license
+
+dhtmlxGantt v.6.1.7 Standard
+This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
+
+(c) Dinamenta, UAB.
+
+*/
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -45,12 +55,32 @@
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -66,23 +96,20 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/codebase/sources/";
+/******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 27);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./sources/ext/undo.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 27:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(28);
-
-
-/***/ }),
-
-/***/ 28:
+/***/ "./sources/ext/undo.js":
+/*!*****************************!*\
+  !*** ./sources/ext/undo.js ***!
+  \*****************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
 gantt.config.undo_steps = 10;
@@ -99,6 +126,14 @@ gantt.getUndoStack = function(){
 
 gantt.getRedoStack = function(){
 	return this._undo._redoStack;
+};
+
+gantt.clearUndoStack = function(){
+	this._undo._undoStack = [];
+};
+
+gantt.clearRedoStack = function(){
+	this._undo._redoStack = [];
 };
 
 gantt.redo = function(){
@@ -119,9 +154,10 @@ gantt.config.undo_types = {
  * @type {{update: string, remove: string, add: string}}
  */
 gantt.config.undo_actions = {
-	update:"update",
-	remove:"remove",// remove item from datastore
-	add:"add"
+	update: "update",
+	remove: "remove", // remove item from datastore
+	add: "add",
+	move: "move" // move task in grid
 };
 
 gantt._undo = {
@@ -134,6 +170,13 @@ gantt._undo = {
 		if(!action.commands.length)
 			return;
 
+		var event = stack === this._undoStack ? "onBeforeUndoStack" : "onBeforeRedoStack";
+		if(gantt.callEvent(event, [action]) === false){
+			return;
+		}
+		// commands can be removed from event handler
+		if(!action.commands.length)
+			return;
 
 		stack.push(action);
 		while(stack.length > this.maxSteps){
@@ -145,20 +188,48 @@ gantt._undo = {
 		return stack.pop();
 	},
 
+	_reorderCommands: function(action){
+		// firstly process tasks and only then links
+		// in order to ensure links are added not earlier than their tasks
+		// firstly to 'move' actions and only then updates
+		var weights = {any: 0, link:1, task:2};
+		var actionWeights = {move: 1, any:0};
+		action.commands.sort(function(a, b){
+			if(a.entity == "task" && b.entity == "task"){
+				if(a.type != b.type){
+					return (actionWeights[b.type] || 0) - (actionWeights[a.type] || 0);
+				}else if(a.type == "move" && a.oldValue && b.oldValue && b.oldValue.parent == a.oldValue.parent) {
+					return a.$index - b.$index;
+				}else{
+					return 0;
+				}
+
+			}else{
+				var weightA = weights[a.entity] || weights.any;
+				var weightB = weights[b.entity] || weights.any;
+				return weightB - weightA;
+			}
+
+		});
+	},
 	undo:function(){
 		this.updateConfigs();
 		if(!this.undo_enabled)
 			return;
 
 		var action = this._pop(this._undoStack);
+		if(action)
+			this._reorderCommands(action);
 		if(gantt.callEvent("onBeforeUndo", [action]) !== false){
 			if(action){
 
 				this._applyAction(this.action.invert(action));
-				this._push(this._redoStack, action);
+				this._push(this._redoStack, gantt.copy(action));
+				gantt.callEvent("onAfterUndo", [action]);
+				return;
 			}
 		}
-		gantt.callEvent("onAfterUndo", []);
+		gantt.callEvent("onAfterUndo", [null]);
 	},
 
 	redo:function(){
@@ -167,13 +238,18 @@ gantt._undo = {
 			return;
 
 		var action = this._pop(this._redoStack);
-			if(gantt.callEvent("onBeforeRedo", [action]) !== false){
-				if(action){
-					this._applyAction(action);
-					this._push(this._undoStack, action);
-				}
+		if(action)
+			this._reorderCommands(action);
+
+		if(gantt.callEvent("onBeforeRedo", [action]) !== false){
+			if(action){
+				this._applyAction(action);
+				this._push(this._undoStack, gantt.copy(action));
+				gantt.callEvent("onAfterRedo", [action]);
+				return;
+			}
 		}
-		gantt.callEvent("onAfterRedo", []);
+		gantt.callEvent("onAfterRedo", [null]);
 	},
 
 	_applyAction:function(action){
@@ -186,6 +262,7 @@ gantt._undo = {
 			add: "addTask",
 			update: "updateTask",
 			remove: "deleteTask",
+			move: "moveTask",
 			isExists: "isTaskExists"
 		};
 		methods[entities.link] = {
@@ -195,20 +272,21 @@ gantt._undo = {
 			isExists: "isLinkExists"
 		};
 
-		gantt.batchUpdate(function(){
-			for(var i = 0; i < action.commands.length; i++){
+		gantt.batchUpdate(function() {
+			for (var i = 0; i < action.commands.length; i++) {
 				command = action.commands[i];
 				var method = methods[command.entity][command.type],
 					check = methods[command.entity]["isExists"];
 
-				if(command.type == actions.add){
+				if (command.type == actions.add) {
 					gantt[method](command.oldValue, command.oldValue.parent, command.oldValue.$index);
-				}else if(command.type == actions.remove){
-					if(gantt[check](command.value.id))
+				} else if (command.type == actions.remove) {
+					if (gantt[check](command.value.id))
 						gantt[method](command.value.id);
-				}else if(command.type == actions.update){
-
+				} else if (command.type == actions.update) {
 					gantt[method](command.value.id, command.value);
+				} else if (command.type == actions.move) {
+					gantt[method](command.value.id, command.value.$index, command.value.parent);
 				}
 			}
 		});
@@ -230,7 +308,7 @@ gantt._undo = {
 
 			for(var i = 0; i < action.commands.length; i++){
 				var command = revert.commands[i] = commands.invert(revert.commands[i]);
-				if(command.type == commands.type.update){
+				if(command.type == commands.type.update || command.type == commands.type.move){
 					var value = command.value;
 					command.value = command.oldValue;
 					command.oldValue = value;
@@ -271,6 +349,8 @@ gantt._undo = {
 					return this.type.clear;
 				case this.type.clear:
 					return this.type.load;
+				case this.type.move:
+					return this.type.move;
 				default:
 					gantt.assert(false, "Invalid command "+ command);
 					return null;
@@ -282,6 +362,13 @@ gantt._undo = {
 		_batchAction: null,
 		_batchMode: false,
 		_ignore: false,
+		_ignoreMoveEvents: false,
+		isMoveEventsIgnored: function() {
+			return this._ignoreMoveEvents;
+		},
+		toggleIgnoreMoveEvents: function(newValue) {
+			this._ignoreMoveEvents = newValue || false;
+		},
 		startIgnore: function(){
 			this._ignore = true;
 		},
@@ -340,8 +427,6 @@ gantt._undo = {
 		_storeLinkCommand: function(obj, type){
 			this._storeEntityCommand(obj, this.getInitialLink(obj.id), type, gantt._undo.command.entity.link);
 		},
-
-
 		onTaskAdded:function(task){
 			if(!this._ignore)
 				this._storeTaskCommand(task, gantt._undo.command.type.add);
@@ -349,6 +434,16 @@ gantt._undo = {
 		onTaskUpdated:function(task){
 			if(!this._ignore)
 				this._storeTaskCommand(task, gantt._undo.command.type.update);
+		},
+		onTaskMoved: function(task){
+			if (!this._ignore) {
+				this._storeEntityCommand(
+					task,
+					this.getInitialTask(task.id),
+					gantt._undo.command.type.move,
+					gantt._undo.command.entity.task
+				);
+			}
 		},
 		onTaskDeleted: function(task){
 			if(!this._ignore){
@@ -411,17 +506,22 @@ gantt._undo = {
 			this._nestedTasks[id] = tasks;
 			this._nestedLinks[id] = links;
 		},
-		setInitialTask: function(id){
-			if(!this._initialTasks[id] || !this._batchMode){
-				var task = gantt.copy( gantt.getTask(id));
+		setInitialTask: function(id, overwrite){
+			if (overwrite || (!this._initialTasks[id] || !this._batchMode)) {
+				var task = gantt.copy(gantt.getTask(id));
 				task.$index = gantt.getTaskIndex(id);
-
-				this._initialTasks[id] = task;
+				this.setInitialTaskObject(id, task);
 			}
 			return this._initialTasks[id];
 		},
 		getInitialTask: function(id){
 			return this._initialTasks[id];
+		},
+		clearInitialTasks: function(){
+			this._initialTasks = {};
+		},
+		setInitialTaskObject: function(id, object) {
+			this._initialTasks[id] = object;
 		},
 
 		_initialLinks:{},
@@ -458,14 +558,17 @@ gantt._undo.updateConfigs = function(){
 	for(var i in noTrack){
 		gantt.attachEvent(i, function(){
 			monitor.startIgnore();
+			return true;
 		});
 		gantt.attachEvent(noTrack[i], function(){
 			monitor.stopIgnore();
+			return true;
 		});
 	}
 
 	var batchActions = [
 		"onTaskDragStart",
+		"onAfterTaskUpdate",
 		"onAfterTaskDelete",
 		"onBeforeBatchUpdate"
 	];
@@ -473,29 +576,57 @@ gantt._undo.updateConfigs = function(){
 	for(var i  = 0; i < batchActions.length; i++){
 		gantt.attachEvent(batchActions[i], function(){
 			monitor.startBatchAction();
+			return true;
 		});
 	}
 	function store(id){
 		monitor.setInitialTask(id);
+		gantt.eachTask(function(child){
+			monitor.setInitialTask(child.id);
+		}, id);
 		return true;
 	}
-
-
 
 	gantt.attachEvent("onBeforeTaskDrag", store);
 	gantt.attachEvent("onLightbox", store);
 	gantt.attachEvent("onBeforeTaskAutoSchedule", function(task){ store(task.id);  return true;});
+
+	var deleteCacheCooldown = null;
+
+	function saveInitialAll(){
+		if(!deleteCacheCooldown){
+			deleteCacheCooldown = setTimeout(function(){
+				deleteCacheCooldown = null;
+			});
+
+			monitor.clearInitialTasks();
+			gantt.eachTask(function(task){
+				monitor.setInitialTask(task.id);
+			});
+		}
+	}
+
 	gantt.attachEvent("onBeforeTaskDelete", function(id){
 		store(id);
 		var nested = [];
+
+		// remember task indexes in case their being deleted in a loop, so they could be restored in the correct order
+		saveInitialAll();
+
 		gantt.eachTask(function(task){
 			nested.push(task.id);
 		}, id);
 		monitor.setNestedTasks(id, nested);
 		return true;
 	});
+	if(gantt.ext.inlineEditors){
+		gantt.ext.inlineEditors.attachEvent("onEditStart", function(state){
+			store(state.id);
+		});
+	}
 
-	gantt.attachEvent("onAfterTaskAdd", function(id, task){
+	gantt.attachEvent("onAfterTaskAdd", function (id, task) {
+		monitor.setInitialTask(id, true);
 		monitor.onTaskAdded(task);
 	});
 	gantt.attachEvent("onAfterTaskUpdate", function(id, task){
@@ -514,6 +645,40 @@ gantt._undo.updateConfigs = function(){
 	gantt.attachEvent("onAfterLinkDelete", function(id, task){
 		monitor.onLinkDeleted(task);
 	});
+
+	var datastore = gantt.getDatastore("task");
+
+	datastore.attachEvent("onBeforeItemMove", function(id, parent, tindex){
+		if (!monitor.isMoveEventsIgnored()) {
+
+			saveInitialAll();
+		}
+		return true;
+	});
+
+
+	datastore.attachEvent("onAfterItemMove", function(id, parent, tindex){
+		if (!monitor.isMoveEventsIgnored()) {
+			monitor.onTaskMoved(getMoveObjectByTaskId(id));
+		}
+		return true;
+	});
+
+	gantt.attachEvent("onRowDragStart", function(id, target, e) {
+		monitor.toggleIgnoreMoveEvents(true);
+		saveInitialAll();
+		return true;
+	});
+
+	gantt.attachEvent("onRowDragEnd", function(id, target) {
+		monitor.onTaskMoved(getMoveObjectByTaskId(id));
+		monitor.toggleIgnoreMoveEvents();
+		return true;
+	});
+
+	function getMoveObjectByTaskId(id) {
+		return gantt.copy(gantt.getTask(id));
+	}
 
 	function updTask(task, oldId, newId){
 		if(!task) return;
@@ -600,3 +765,4 @@ gantt._undo.updateConfigs = function(){
 /***/ })
 
 /******/ });
+});

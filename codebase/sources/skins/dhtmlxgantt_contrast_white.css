@@ -1,12 +1,12 @@
-/*!
- * @license
- * 
- * dhtmlxGantt v.5.0.5 Stardard
- * This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
- * 
- * (c) Dinamenta, UAB.
- * 
- */
+/*
+@license
+
+dhtmlxGantt v.6.1.7 Standard
+This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
+
+(c) Dinamenta, UAB.
+
+*/
 .buttonBg {
   background: #fff;
 }
@@ -108,13 +108,15 @@
 .modalBorder {
   border-color: #000;
   -webkit-box-shadow: inset 0px 0px 0px 2px #000;
-          box-shadow: inset 0px 0px 0px 2px #000;
+  -moz-box-shadow: inset 0px 0px 0px 2px #000;
+  box-shadow: inset 0px 0px 0px 2px #000;
   padding: 2px;
 }
 .gantt_popup_shadow {
   border-color: #000;
   -webkit-box-shadow: inset 0px 0px 0px 2px #000;
-          box-shadow: inset 0px 0px 0px 2px #000;
+  -moz-box-shadow: inset 0px 0px 0px 2px #000;
+  box-shadow: inset 0px 0px 0px 2px #000;
   padding: 2px;
 }
 .gantt_cal_larea {
@@ -247,8 +249,8 @@
   color: #262626;
   font-size: 14px;
   border-bottom: 1px solid #000;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .gantt_grid_scale {
   background-color: #fff;
@@ -260,8 +262,7 @@
   background-color: #fff;
 }
 .gantt_scale_line {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   -moz-box-sizing: border-box;
   border-top: 1px solid #000;
 }
@@ -276,14 +277,12 @@
   position: relative;
   cursor: default;
   height: 100%;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   -moz-box-sizing: border-box;
   line-height: 33px;
+  -moz-user-select: -moz-none;
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
   overflow: hidden;
 }
 .gantt_scale_line {
@@ -292,6 +291,7 @@
 .gantt_grid_data {
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 .gantt_row {
   position: relative;
@@ -347,8 +347,7 @@
 .gantt_task_cell,
 .gantt_grid_head_cell,
 .gantt_scale_cell {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
 .gantt_grid_head_cell,
@@ -373,8 +372,9 @@
   border-right: 1px solid #000;
   height: 100%;
   width: 100%;
+  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 .gantt_cell {
   display: inline-block;
@@ -547,6 +547,8 @@
   margin: 5px;
   margin-bottom: 10px;
   -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -o-transition: all .5s ease;
   transition: all .5s ease;
 }
 .gantt-info.hidden {
@@ -566,7 +568,8 @@
   z-index: 20000;
   border-color: #000;
   -webkit-box-shadow: inset 0px 0px 0px 2px #000;
-          box-shadow: inset 0px 0px 0px 2px #000;
+  -moz-box-shadow: inset 0px 0px 0px 2px #000;
+  box-shadow: inset 0px 0px 0px 2px #000;
   padding: 2px;
   font-family: "arial";
   border-radius: 6px;
@@ -591,8 +594,7 @@
 .gantt-info,
 .gantt_popup_button,
 .gantt_button {
-  -ms-user-select: none;
-      user-select: none;
+  user-select: none;
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
   cursor: pointer;
@@ -635,8 +637,8 @@ div.dhx_modal_cover {
 .gantt_popup_button div {
   border-radius: 4px;
   font-size: 16px;
-  -webkit-box-sizing: content-box;
-          box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
   padding: 0px;
   margin: 0px;
   vertical-align: top;
@@ -658,29 +660,35 @@ div.dhx_modal_cover {
 .gantt-error {
   font-size: 16px;
   color: #000;
-  -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
-          box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
   padding: 0px;
-  background-color: #FFF;
+  background-color: #FFFFFF;
   border-radius: 3px;
-  border: 1px solid #ffffff;
+  border: 1px solid #FFFFFF;
 }
 .gantt-info div {
   padding: 5px 10px 5px 10px;
-  background-color: #fff;
+  background-color: #FFFFFF;
   border-radius: 3px;
   border: 1px solid #000;
 }
 .gantt-error {
   background-color: #b60000;
   border: 1px solid #000;
-  -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
-          box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
 }
 .gantt-error div {
   background-color: #b60000;
   border: 1px solid #940000;
-  color: #FFF;
+  color: #FFFFFF;
+}
+.gantt-warning {
+  background-color: #EF7F00;
+  border: 1px solid #000;
+}
+.gantt-warning div {
+  background-color: #EF7F00;
+  border: 1px solid #C97110;
+  color: #FFFFFF;
 }
 .gantt_grid div,
 .gantt_data_area div {
@@ -691,10 +699,9 @@ div.dhx_modal_cover {
   position: relative;
   overflow-x: hidden;
   overflow-y: hidden;
+  -moz-user-select: -moz-none;
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 .gantt_links_area {
   position: absolute;
@@ -731,10 +738,12 @@ div.dhx_modal_cover {
   overflow: hidden;
 }
 .gantt_task_line {
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
   border-radius: 1px;
   position: absolute;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   background-color: #BBF9FF;
   border: 1px solid #000;
   -webkit-user-select: none;
@@ -746,17 +755,25 @@ div.dhx_modal_cover {
 }
 .gantt_touch_move,
 .gantt_touch_progress .gantt_touch_resize {
+  -moz-transform: scale(1.02, 1.1);
+  -o-transform: scale(1.02, 1.1);
   -webkit-transform: scale(1.02, 1.1);
-          transform: scale(1.02, 1.1);
+  transform: scale(1.02, 1.1);
+  -moz-transform-origin: 50%;
+  -o-transform-origin: 50%;
   -webkit-transform-origin: 50%;
-          transform-origin: 50%;
+  transform-origin: 50%;
 }
 .gantt_touch_progress .gantt_task_progress_drag,
 .gantt_touch_resize .gantt_task_drag {
+  -moz-transform: scaleY(1.3);
+  -o-transform: scaleY(1.3);
   -webkit-transform: scaleY(1.3);
-          transform: scaleY(1.3);
+  transform: scaleY(1.3);
+  -moz-transform-origin: 50%;
+  -o-transform-origin: 50%;
   -webkit-transform-origin: 50%;
-          transform-origin: 50%;
+  transform-origin: 50%;
 }
 .gantt_side_content {
   position: absolute;
@@ -787,8 +804,7 @@ div.dhx_modal_cover {
   background-color: #000;
 }
 .gantt_task_link:hover .gantt_line_wrapper div {
-  -webkit-box-shadow: 0 0 5px 0px #000;
-          box-shadow: 0 0 5px 0px #000;
+  box-shadow: 0 0 5px 0px #000;
 }
 .gantt_task_link div.gantt_link_arrow {
   background-color: transparent;
@@ -804,13 +820,14 @@ div.dhx_modal_cover {
 .gantt_link_control div {
   display: none;
   cursor: pointer;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   position: relative;
   top: 50%;
   margin-top: -7.5px;
   vertical-align: middle;
   border: 1px solid #929292;
+  -webkit-border-radius: 6.5px;
+  -moz-border-radius: 6.5px;
   border-radius: 6.5px;
   height: 13px;
   width: 13px;
@@ -850,26 +867,23 @@ div.dhx_modal_cover {
 }
 .gantt_link_source,
 .gantt_link_target {
-  -webkit-box-shadow: 0px 0px 3px #BBF9FF;
-          box-shadow: 0px 0px 3px #BBF9FF;
+  box-shadow: 0px 0px 3px #BBF9FF;
 }
 .gantt_link_target.link_start_allow,
 .gantt_link_target.link_finish_allow {
-  -webkit-box-shadow: 0px 0px 3px #262626;
-          box-shadow: 0px 0px 3px #262626;
+  box-shadow: 0px 0px 3px #262626;
 }
 .gantt_link_target.link_start_deny,
 .gantt_link_target.link_finish_deny {
-  -webkit-box-shadow: 0px 0px 3px #e87e7b;
-          box-shadow: 0px 0px 3px #e87e7b;
+  box-shadow: 0px 0px 3px #e87e7b;
 }
-.link_start_allow .gantt_link_control.task_left div,
-.link_finish_allow .gantt_link_control.task_right div {
+.link_start_allow .gantt_link_control.task_start_date div,
+.link_finish_allow .gantt_link_control.task_end_date div {
   background-color: #262626;
   border-color: #000000;
 }
-.link_start_deny .gantt_link_control.task_left div,
-.link_finish_deny .gantt_link_control.task_right div {
+.link_start_deny .gantt_link_control.task_start_date div,
+.link_finish_deny .gantt_link_control.task_end_date div {
   background-color: #e87e7b;
   border-color: #dd3e3a;
 }
@@ -919,7 +933,6 @@ div.dhx_modal_cover {
 .gantt_task_drag {
   height: 100%;
   width: 8px;
-  /*background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAACCAYAAAB7Xa1eAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QYDDjkw3UJvAwAAABRJREFUCNdj/P//PwM2wASl/6PTAKrrBf4+lD8LAAAAAElFTkSuQmCC);*/
   z-index: 1;
   top: -1px;
 }
@@ -943,8 +956,7 @@ div.dhx_modal_cover {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAYAAAB24g05AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAABJElEQVQoz6WRsWqDUBSG/3uvXFHQoBwcMgtu1U6BQAn4BoUMTi7t5JBH0EHo1pdw6liwa8mQMVM6BzrHJUOgNZJws4XQEkjItx04/wfn/MAZiEhKKVdSyhURSVwDEfU1TfsJw1CFYag0Tfslov5FYdd1B5zzXRzHqq5rVde1iuNYcc53rusO/u6L08FxnHS9Xn8kScKzLIMQAkIIDIdD7Pd7Pp/PnxzH+W7bdvFP0Ov1XjabzetkMmHj8RiMsaOYMYYoikBEbDabPdq2rW+328+jwLKs967rnouiwGg0Onue7/sIggDT6fTBMIz7ruvemGmaC13X78qyhO/7F/1puVwiz3O0bfvFAKiqquB53lVNNU2DNE3BAVwdPs1w3AgDoG4RHADj3FVF5NgPuQAAAABJRU5ErkJggg==);
 }
 .gantt_link_tooltip {
-  -webkit-box-shadow: 3px 3px 3px #888888;
-          box-shadow: 3px 3px 3px #888888;
+  box-shadow: 3px 3px 3px #888888;
   background-color: #fff;
   border-left: 1px dotted #cecece;
   border-top: 1px dotted #cecece;
@@ -977,19 +989,16 @@ div.dhx_modal_cover {
   border-right-color: #3d4dad;
 }
 .gantt_task_line.gantt_selected {
-  -webkit-box-shadow: 0 0 5px #18EEFF;
-          box-shadow: 0 0 5px #18EEFF;
+  box-shadow: 0 0 5px #18EEFF;
 }
 .gantt_task_line.gantt_project.gantt_selected {
-  -webkit-box-shadow: 0 0 5px #74FFA9;
-          box-shadow: 0 0 5px #74FFA9;
+  box-shadow: 0 0 5px #74FFA9;
 }
 .gantt_task_line.gantt_milestone {
   visibility: hidden;
   background-color: #c06fce;
   border: 0px solid #6e2a7a;
-  -webkit-box-sizing: content-box;
-          box-sizing: content-box;
+  box-sizing: content-box;
   -moz-box-sizing: content-box;
 }
 .gantt_task_line.gantt_milestone div {
@@ -1000,11 +1009,13 @@ div.dhx_modal_cover {
   border: inherit;
   border-width: 1px;
   border-radius: inherit;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 .gantt_task_line.gantt_task_inline_color {
   border-color: #999999;
@@ -1014,16 +1025,13 @@ div.dhx_modal_cover {
   opacity: 0.2;
 }
 .gantt_task_line.gantt_task_inline_color.gantt_selected {
-  -webkit-box-shadow: 0 0 5px #999999;
-          box-shadow: 0 0 5px #999999;
+  box-shadow: 0 0 5px #999999;
 }
 .gantt_task_line.gantt_task_inline_color.gantt_project.gantt_selected {
-  -webkit-box-shadow: 0 0 5px #999999;
-          box-shadow: 0 0 5px #999999;
+  box-shadow: 0 0 5px #999999;
 }
 .gantt_task_link.gantt_link_inline_color:hover .gantt_line_wrapper div {
-  -webkit-box-shadow: 0 0 5px 0px #999999;
-          box-shadow: 0 0 5px 0px #999999;
+  box-shadow: 0 0 5px 0px #999999;
 }
 .gantt_critical_task {
   background-color: #e63030;
@@ -1044,8 +1052,13 @@ div.dhx_modal_cover {
 .gantt_qi_big_icon:focus,
 .gantt_popup_button:focus,
 .gantt_grid_head_cell:focus {
+  -moz-box-shadow: inset 0px 0px 1px 1px #4d90fe;
   -webkit-box-shadow: inset 0px 0px 1px 1px #4d90fe;
-          box-shadow: inset 0px 0px 1px 1px #4d90fe;
+  box-shadow: inset 0px 0px 1px 1px #4d90fe;
+}
+.gantt_split_parent {
+  opacity: 0.1;
+  pointer-events: none;
 }
 .gantt_unselectable,
 .gantt_unselectable div {
@@ -1067,7 +1080,8 @@ div.dhx_modal_cover {
   height: 250px;
   border-color: #000;
   -webkit-box-shadow: inset 0px 0px 0px 2px #000;
-          box-shadow: inset 0px 0px 0px 2px #000;
+  -moz-box-shadow: inset 0px 0px 0px 2px #000;
+  box-shadow: inset 0px 0px 0px 2px #000;
   padding: 2px;
 }
 .gantt_cal_light_wide {
@@ -1126,13 +1140,17 @@ div.dhx_modal_cover {
   overflow-x: hidden;
   font-family: "arial";
   font-size: 14px;
+  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   border: 1px solid #c1c1c1;
   height: 100%;
   width: 100%;
   outline: none !important;
   resize: none;
+}
+.gantt_section_constraint [data-constraint-time-select] {
+  margin-left: 20px;
 }
 .gantt_time {
   font-weight: bold;
@@ -1152,6 +1170,8 @@ div.dhx_modal_cover {
   margin: 10px 7px 5px 10px;
   padding: 5px 15px 5px 10px;
   float: left;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
   border-radius: 4px;
   border-width: 2px;
   border-color: #c1c1c1;
@@ -1159,9 +1179,13 @@ div.dhx_modal_cover {
   height: 32px;
   font-weight: bold;
   background: #fff;
+  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   cursor: pointer;
+}
+.gantt_hidden {
+  display: none;
 }
 .gantt_btn_set div {
   float: left;
@@ -1210,6 +1234,10 @@ div.dhx_modal_cover {
   width: 90px;
   border: 1px solid #CECECE;
   text-align: center;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
   border-radius: 4px;
 }
 .gantt_custom_button div {
@@ -1227,8 +1255,9 @@ div.dhx_modal_cover {
   padding: 2px 4px;
 }
 .gantt_cal_light_wide .gantt_cal_larea {
+  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   border: 1px solid #c1c1c1;
 }
 .gantt_cal_light_wide .gantt_cal_lsection {
@@ -1315,8 +1344,9 @@ div.dhx_modal_cover {
 .gantt_duration .gantt_duration_value,
 .gantt_duration .gantt_duration_dec,
 .gantt_duration .gantt_duration_inc {
+  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   text-align: center;
   vertical-align: top;
   height: 100%;
@@ -1352,6 +1382,66 @@ div.dhx_modal_cover {
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 }
+.gantt_resources {
+  max-height: 150px;
+  height: auto;
+  overflow-y: auto;
+}
+.gantt_resource_row {
+  display: block;
+  padding: 10px 0;
+  border-bottom: 1px solid #000;
+  cursor: pointer;
+}
+.gantt_resource_row input[type=checkbox]:not(:checked),
+.gantt_resource_row input[type=checkbox]:not(:checked) ~ div {
+  opacity: 0.5;
+}
+.gantt_resource_toggle {
+  vertical-align: middle;
+}
+.gantt_resources_filter .gantt_resources_filter_input {
+  padding: 1px 2px 1px 2px;
+  box-sizing: border-box;
+}
+.gantt_resources_filter .switch_unsetted {
+  vertical-align: middle;
+}
+.gantt_resource_cell {
+  display: inline-block;
+}
+.gantt_resource_cell.gantt_resource_cell_checkbox {
+  width: 24px;
+  max-width: 24px;
+  min-width: 24px;
+  vertical-align: middle;
+}
+.gantt_resource_cell.gantt_resource_cell_label {
+  width: 40%;
+  max-width: 40%;
+  vertical-align: middle;
+}
+.gantt_resource_cell.gantt_resource_cell_value {
+  width: 30%;
+  max-width: 30%;
+  vertical-align: middle;
+}
+.gantt_resource_cell.gantt_resource_cell_value input,
+.gantt_resource_cell.gantt_resource_cell_value select {
+  width: 80%;
+  vertical-align: middle;
+  padding: 1px 2px 1px 2px;
+  box-sizing: border-box;
+}
+.gantt_resource_cell.gantt_resource_cell_unit {
+  width: 10%;
+  max-width: 10%;
+  vertical-align: middle;
+}
+.gantt_resource_early_value {
+  opacity: 0.8;
+  font-size: 0.9em;
+}
 /* Quick info */
 .gantt_cal_quick_info {
   border: 1px solid #000;
@@ -1360,7 +1450,8 @@ div.dhx_modal_cover {
   z-index: 300;
   border-color: #000;
   -webkit-box-shadow: inset 0px 0px 0px 2px #000;
-          box-shadow: inset 0px 0px 0px 2px #000;
+  -moz-box-shadow: inset 0px 0px 0px 2px #000;
+  box-shadow: inset 0px 0px 0px 2px #000;
   padding: 2px;
   background-color: #fff;
   width: 300px;
@@ -1459,6 +1550,52 @@ div.dhx_modal_cover {
   padding: 10px;
   position: absolute;
   z-index: 50;
+  white-space: nowrap;
+}
+.gantt_resource_marker {
+  position: absolute;
+  text-align: center;
+  font-size: 14px;
+  color: #FFF;
+}
+.gantt_resource_marker_ok {
+  background: rgba(78, 208, 134, 0.75);
+}
+.gantt_resource_marker_overtime {
+  background: rgba(255, 134, 134, 0.69);
+}
+.gantt_histogram_label {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  font-weight: bold;
+  font-size: 14px;
+}
+.gantt_histogram_fill {
+  background-color: rgba(41, 157, 180, 0.2);
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+.gantt_histogram_hor_bar {
+  height: 1px;
+  position: absolute;
+  background: #299DB4;
+  margin-top: -1px;
+  margin-left: -1px;
+}
+.gantt_histogram_vert_bar {
+  width: 1px;
+  position: absolute;
+  background: #299DB4;
+  margin-left: -1px;
+}
+.gantt_histogram_cell {
+  position: absolute;
+  text-align: center;
+  font-size: 14px;
+  color: #000000;
 }
 .gantt_marker {
   height: 100%;
@@ -1467,8 +1604,9 @@ div.dhx_modal_cover {
   position: absolute;
   text-align: center;
   background-color: rgba(255, 0, 0, 0.4);
+  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 .gantt_marker .gantt_marker_content {
   padding: 5px;
@@ -1484,24 +1622,86 @@ div.dhx_modal_cover {
   top: 0;
   left: 0;
 }
+.gantt_grid_editor_placeholder {
+  position: absolute;
+}
+.gantt_grid_editor_placeholder > div,
+.gantt_grid_editor_placeholder input,
+.gantt_grid_editor_placeholder select {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+.gantt_row_placeholder div {
+  opacity: 0.5;
+}
+.gantt_row_placeholder .gantt_file,
+.gantt_row_placeholder .gantt_add {
+  display: none;
+}
+.gantt_drag_marker.gantt_grid_dnd_marker {
+  background-color: transparent;
+  transition: all 0.1s ease ;
+}
+.gantt_grid_dnd_marker_line {
+  height: 4px;
+  width: 100%;
+  background-color: #3498db;
+}
+.gantt_grid_dnd_marker_line::before {
+  background: #fff;
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+  border: 3px solid #3498db;
+  border-radius: 6px;
+  content: "";
+  line-height: 1px;
+  display: block;
+  position: absolute;
+  margin-left: -11px;
+  margin-top: -4px;
+  pointer-events: none;
+}
+.gantt_grid_dnd_marker_folder {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  box-shadow: 0 0 0px 2px #3f98db inset;
+  background: transparent;
+}
+.gantt_overlay_area {
+  position: absolute;
+  height: inherit;
+  width: inherit;
+  top: 0;
+  left: 0;
+  display: none;
+}
+.gantt_overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: inherit;
+  width: inherit;
+}
 .gantt_layout_content {
   width: 100%;
   overflow: auto;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 .gantt_layout_cell {
   position: relative;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 .gantt_layout_cell > .gantt_layout_header {
   background: #33aae8;
   color: white;
   font-size: 17px;
   padding: 5px 10px;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 .gantt_layout_header.collapsed_x {
   background: #a9a9a9;
@@ -1585,9 +1785,7 @@ div.dhx_modal_cover {
 }
 .gantt_noselect {
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 .gantt_layout_cell_border_left {
   border-left: 1px solid #000;
@@ -1684,10 +1882,10 @@ div.dhx_modal_cover {
   -moz-osx-font-smoothing: grayscale;
 }
 .gantt_noselect {
+  -moz-user-select: -moz-none;
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .gantt_drag_marker {
   position: absolute;
@@ -1733,3 +1931,17 @@ div.dhx_modal_cover {
   border-color: transparent;
   color: #fff;
 }
+.gantt_container_resize_watcher {
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+  pointer-events: none;
+  border: 0;
+  box-sizing: border-box;
+  opacity: 0;
+}
+

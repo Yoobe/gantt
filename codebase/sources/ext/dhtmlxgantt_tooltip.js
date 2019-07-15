@@ -1,13 +1,23 @@
-/*!
- * @license
- * 
- * dhtmlxGantt v.5.0.5 Stardard
- * This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
- * 
- * (c) Dinamenta, UAB.
- * 
- */
-/******/ (function(modules) { // webpackBootstrap
+/*
+@license
+
+dhtmlxGantt v.6.1.7 Standard
+This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
+
+(c) Dinamenta, UAB.
+
+*/
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -45,12 +55,32 @@
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -66,15 +96,377 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/codebase/sources/";
+/******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./sources/ext/tooltip/index.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 0:
+/***/ "./sources/ext/tooltip/index.ts":
+/*!**************************************!*\
+  !*** ./sources/ext/tooltip/index.ts ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+gantt.config.tooltip_timeout = 30;
+gantt.config.tooltip_offset_y = 20;
+gantt.config.tooltip_offset_x = 10;
+gantt.config.tooltip_hide_timeout = 30;
+var tooltipManager_1 = __webpack_require__(/*! ./tooltipManager */ "./sources/ext/tooltip/tooltipManager.ts");
+var tooltipManager = new tooltipManager_1.TooltipManager();
+gantt.ext.tooltips = tooltipManager;
+gantt.attachEvent("onGanttReady", function () {
+    tooltipManager.tooltipFor({
+        selector: "[" + gantt.config.task_attribute + "]:not(.gantt_task_row)",
+        html: function (event) {
+            if (gantt.config.touch && !gantt.config.touch_tooltip) {
+                return;
+            }
+            var targetTaskId = gantt.locate(event);
+            if (gantt.isTaskExists(targetTaskId)) {
+                var task = gantt.getTask(targetTaskId);
+                return gantt.templates.tooltip_text(task.start_date, task.end_date, task);
+            }
+            return null;
+        },
+        global: false
+    });
+});
+gantt.attachEvent("onDestroy", function () {
+    tooltipManager.destructor();
+});
+
+
+/***/ }),
+
+/***/ "./sources/ext/tooltip/tooltip.ts":
+/*!****************************************!*\
+  !*** ./sources/ext/tooltip/tooltip.ts ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var domHelpers = __webpack_require__(/*! ../../utils/dom_helpers */ "./sources/utils/dom_helpers.js");
+var Tooltip = /** @class */ (function () {
+    function Tooltip() {
+    }
+    Tooltip.prototype.getNode = function () {
+        if (!this._tooltipNode) {
+            this._tooltipNode = document.createElement("div");
+            this._tooltipNode.className = "gantt_tooltip";
+            gantt._waiAria.tooltipAttr(this._tooltipNode);
+        }
+        return this._tooltipNode;
+    };
+    Tooltip.prototype.setViewport = function (node) {
+        this._root = node;
+        return this;
+    };
+    Tooltip.prototype.show = function (left, top) {
+        var container = document.body;
+        var node = this.getNode();
+        if (!domHelpers.isChildOf(node, container)) {
+            this.hide();
+            container.appendChild(node);
+        }
+        if (left instanceof MouseEvent) {
+            var position = this._calculateTooltipPosition(left);
+            top = position.top;
+            left = position.left;
+        }
+        node.style.top = top + "px";
+        node.style.left = left + "px";
+        gantt._waiAria.tooltipVisibleAttr(node);
+        return this;
+    };
+    Tooltip.prototype.hide = function () {
+        var node = this.getNode();
+        if (node && node.parentNode) {
+            node.parentNode.removeChild(node);
+        }
+        gantt._waiAria.tooltipHiddenAttr(node);
+        return this;
+    };
+    Tooltip.prototype.setContent = function (html) {
+        var node = this.getNode();
+        node.innerHTML = html;
+        return this;
+    };
+    Tooltip.prototype._getViewPort = function () {
+        return this._root || document.body;
+    };
+    Tooltip.prototype._calculateTooltipPosition = function (event) {
+        // top/left coordinates inside the viewport by mouse position
+        var viewport = this._getViewPortSize();
+        var tooltipNode = this.getNode();
+        var tooltip = {
+            top: 0,
+            left: 0,
+            width: tooltipNode.offsetWidth,
+            height: tooltipNode.offsetHeight,
+            bottom: 0,
+            right: 0
+        };
+        var offsetX = gantt.config.tooltip_offset_x;
+        var offsetY = gantt.config.tooltip_offset_y;
+        var container = document.body;
+        var mouse = domHelpers.getRelativeEventPosition(event, container);
+        tooltip.top = mouse.y;
+        tooltip.left = mouse.x;
+        tooltip.top += offsetY;
+        tooltip.left += offsetX;
+        tooltip.bottom = tooltip.top + tooltip.height;
+        tooltip.right = tooltip.left + tooltip.width;
+        // edge cases when the tooltip element can be partially hidden by edges of the viewport
+        if (tooltip.top < viewport.top) {
+            tooltip.top = viewport.top;
+            tooltip.bottom = tooltip.top + tooltip.height;
+        }
+        else if (tooltip.bottom > viewport.bottom) {
+            tooltip.bottom = viewport.bottom;
+            tooltip.top = tooltip.bottom - tooltip.height;
+        }
+        if (tooltip.left < viewport.left) {
+            tooltip.left = viewport.left;
+            tooltip.right = viewport.left + tooltip.width;
+        }
+        else if (tooltip.right > viewport.right) {
+            tooltip.right = viewport.right;
+            tooltip.left = tooltip.right - tooltip.width;
+        }
+        if (mouse.x >= tooltip.left && mouse.x <= tooltip.right) {
+            tooltip.left = mouse.x - tooltip.width - offsetX;
+            tooltip.right = tooltip.left + tooltip.width;
+        }
+        if (mouse.y >= tooltip.top && mouse.y <= tooltip.bottom) {
+            tooltip.top = mouse.y - tooltip.height - offsetY;
+            tooltip.bottom = tooltip.top + tooltip.height;
+        }
+        return tooltip;
+    };
+    Tooltip.prototype._getViewPortSize = function () {
+        var container = this._getViewPort();
+        var viewport = container;
+        var scrollTop = window.scrollY + document.body.scrollTop;
+        var scrollLeft = window.scrollX + document.body.scrollLeft;
+        var pos;
+        // support for the initial tooltip mode where the tooltip element was attached to the data area of gantt
+        if (container === gantt.$task_data) {
+            viewport = gantt.$task;
+            scrollTop = 0;
+            scrollLeft = 0;
+            pos = domHelpers.getNodePosition(gantt.$task);
+        }
+        else {
+            pos = domHelpers.getNodePosition(viewport);
+        }
+        return {
+            left: pos.x + scrollLeft,
+            top: pos.y + scrollTop,
+            width: pos.width,
+            height: pos.height,
+            bottom: pos.y + pos.height + scrollTop,
+            right: pos.x + pos.width + scrollLeft
+        };
+    };
+    return Tooltip;
+}());
+exports.Tooltip = Tooltip;
+
+
+/***/ }),
+
+/***/ "./sources/ext/tooltip/tooltipManager.ts":
+/*!***********************************************!*\
+  !*** ./sources/ext/tooltip/tooltipManager.ts ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var domEventsScope = __webpack_require__(/*! ../../utils/dom_event_scope */ "./sources/utils/dom_event_scope.js");
+var domHelpers = __webpack_require__(/*! ../../utils/dom_helpers */ "./sources/utils/dom_helpers.js");
+var helpers = __webpack_require__(/*! ../../utils/helpers */ "./sources/utils/helpers.js");
+var tooltip_1 = __webpack_require__(/*! ./tooltip */ "./sources/ext/tooltip/tooltip.ts");
+var TooltipManager = /** @class */ (function () {
+    function TooltipManager() {
+        this.tooltip = new tooltip_1.Tooltip();
+        this._listeners = {};
+        this._domEvents = domEventsScope();
+    }
+    TooltipManager.prototype.destructor = function () {
+        this.tooltip.hide();
+        this._domEvents.detachAll();
+    };
+    TooltipManager.prototype.attach = function (config) {
+        var _this = this;
+        var root = document.body;
+        if (!config.global) {
+            root = gantt.$root;
+        }
+        var watchableTarget = null;
+        var handler = function (event) {
+            var eventTarget = domHelpers.getTargetNode(event);
+            var targetNode = domHelpers.closest(eventTarget, config.selector);
+            if (domHelpers.isChildOf(eventTarget, _this.tooltip.getNode())) {
+                return;
+            }
+            if (watchableTarget) {
+                if (targetNode) {
+                    config.onmousemove(event, targetNode);
+                }
+                else {
+                    config.onmouseleave(event, watchableTarget);
+                    watchableTarget = null;
+                }
+            }
+            else {
+                if (targetNode) {
+                    watchableTarget = targetNode;
+                    config.onmouseenter(event, targetNode);
+                }
+            }
+        };
+        this.detach(config.selector);
+        this._domEvents.attach(root, "mousemove", handler);
+        this._listeners[config.selector] = {
+            node: root,
+            handler: handler
+        };
+    };
+    TooltipManager.prototype.detach = function (selector) {
+        var listener = this._listeners[selector];
+        if (listener) {
+            this._domEvents.detach(listener.node, "mousemove", listener.handler);
+        }
+    };
+    TooltipManager.prototype.tooltipFor = function (config) {
+        var _this = this;
+        var cloneDomEvent = function (event) {
+            var clone = event;
+            // making events survive timeout in ie
+            // tslint:disable-next-line no-string-literal
+            if (document["createEventObject"] && !document.createEvent) {
+                // tslint:disable-next-line no-string-literal
+                clone = document["createEventObject"](event);
+            }
+            return clone;
+        };
+        var delayShow = helpers.delay(function (event, html) {
+            _this.tooltip.setContent(html);
+            _this.tooltip.show(event);
+        }, gantt.config.tooltip_timeout || 1);
+        var delayHide = helpers.delay(function () {
+            delayShow.$cancelTimeout();
+            _this.tooltip.hide();
+        }, gantt.config.tooltip_hide_timeout || 1);
+        this.attach({
+            selector: config.selector,
+            global: config.global,
+            onmouseenter: function (event, node) {
+                var html = config.html(event, node);
+                if (html) {
+                    delayShow(cloneDomEvent(event), html);
+                }
+            },
+            onmousemove: function (event, node) {
+                var html = config.html(event, node);
+                if (html) {
+                    delayShow(cloneDomEvent(event), html);
+                }
+                else {
+                    delayShow.$cancelTimeout();
+                    delayHide();
+                }
+            },
+            onmouseleave: function () {
+                delayShow.$cancelTimeout();
+                delayHide();
+            },
+        });
+    };
+    return TooltipManager;
+}());
+exports.TooltipManager = TooltipManager;
+
+
+/***/ }),
+
+/***/ "./sources/utils/dom_event_scope.js":
+/*!******************************************!*\
+  !*** ./sources/utils/dom_event_scope.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var utils = __webpack_require__(/*! ./utils */ "./sources/utils/utils.js");
+
+function createScope(addEvent, removeEvent) {
+	addEvent = addEvent || utils.event;
+	removeEvent = removeEvent || utils.eventRemove;
+
+	var handlers = [];
+
+	var eventScope = {
+		attach: function(el, event, callback, capture){
+			handlers.push({element: el, event:event, callback: callback, capture: capture});
+			addEvent(el, event, callback, capture);
+		},
+		detach: function(el, event, callback, capture){
+			removeEvent(el, event, callback, capture);
+			for(var i = 0; i < handlers.length; i++){
+				var handler = handlers[i];
+				if (handler.element === el && handler.event === event && handler.callback === callback && handler.capture === capture) {
+					handlers.splice(i, 1);
+					i--;
+				}
+			}
+		},
+		detachAll: function () {
+			var staticArray = handlers.slice();
+			// original handlers array can be spliced on every iteration
+			for (var i = 0; i < staticArray.length; i++){
+				var handler = staticArray[i];
+				eventScope.detach(handler.element, handler.event, handler.callback, handler.capture);
+				eventScope.detach(handler.element, handler.event, handler.callback, undefined);
+				eventScope.detach(handler.element, handler.event, handler.callback, false);
+				eventScope.detach(handler.element, handler.event, handler.callback, true);
+			}
+			handlers.splice(0, handlers.length);
+		},
+		extend: function(){
+			return createScope(this.event, this.eventRemove);
+		}
+	};
+
+	if (!window.scopes) {
+		window.scopes = [];
+	}
+	window.scopes.push(handlers);
+	return eventScope;
+}
+
+module.exports = createScope;
+
+/***/ }),
+
+/***/ "./sources/utils/dom_helpers.js":
+/*!**************************************!*\
+  !*** ./sources/utils/dom_helpers.js ***!
+  \**************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
 //returns position of html element on the page
@@ -190,7 +582,7 @@ function getClassName(node){
 		className = className.baseVal;
 
 	if(!className.indexOf)
-		className = '';
+		className = "";
 
 	return _trimString(className);
 }
@@ -204,8 +596,16 @@ function addClassName(node, className){
 function removeClassName(node, name) {
 	name = name.split(" ");
 	for (var i = 0; i < name.length; i++) {
-		var regEx = new RegExp('\\s?\\b' + name[i] + '\\b(?![-_\.])', "");
+		var regEx = new RegExp("\\s?\\b" + name[i] + "\\b(?![-_.])", "");
 		node.className = node.className.replace(regEx, "");
+	}
+}
+
+function hasClass(element, className){
+	if ('classList' in element) {
+		return element.classList.contains(className);
+	} else { 
+		return new RegExp("\\b" + className + "\\b").test(element.className);
 	}
 }
 
@@ -275,15 +675,14 @@ function _trimString(str){
 }
 
 function locateClassName(e, classname, strict){
+	var trg = getTargetNode(e);
+	var css = "";
+
 	if(strict === undefined)
 		strict = true;
 
-	var trg = getTargetNode(e);
-	var css = '';
-	var test = false;
 	while (trg){
 		css = getClassName(trg);
-
 		if(css){
 			var ind = css.indexOf(classname);
 			if (ind >= 0){
@@ -298,7 +697,6 @@ function locateClassName(e, classname, strict){
 					return trg;
 			}
 		}
-
 		trg=trg.parentNode;
 	}
 	return null;
@@ -308,27 +706,45 @@ function locateClassName(e, classname, strict){
 event position relatively to DOM element
  */
 function getRelativeEventPosition(ev, node){
-	if (ev.pageX || ev.pageY)
-		var pos = {x: ev.pageX, y: ev.pageY};
-
 	var d = document.documentElement;
-	var pos = {
-		x: ev.clientX + d.scrollLeft - d.clientLeft,
-		y: ev.clientY + d.scrollTop - d.clientTop
-	};
-
 	var box = elementPosition(node);
-	pos.x = pos.x - box.x + node.scrollLeft;
-	pos.y = pos.y - box.y + node.scrollTop;
-	return pos;
+
+	return {
+		x: ev.clientX + d.scrollLeft - d.clientLeft - box.x + node.scrollLeft,
+		y: ev.clientY + d.scrollTop - d.clientTop - box.y + node.scrollTop
+	};
 }
 
-
 function isChildOf(child, parent){
+	if(!child || !parent){
+		return false;
+	}
+
 	while(child && child != parent) {
 		child = child.parentNode;
 	}
-	return child == parent;
+
+	return child === parent;
+}
+
+function closest(element, selector){
+	if(element.closest){
+		return element.closest(selector);
+	}else if(element.matches || element.msMatchesSelector || element.webkitMatchesSelector){
+		var el = element;
+		if (!document.documentElement.contains(el)) return null;
+		do {
+			var method = el.matches || el.msMatchesSelector || el.webkitMatchesSelector;
+
+			if (method.call(el, selector)) return el;
+			el = el.parentElement || el.parentNode;
+		} while (el !== null && el.nodeType === 1); 
+		return null;
+	}else{
+		// eslint-disable-next-line no-console
+		console.error("Your browser is not supported");
+		return null;
+	}
 }
 
 module.exports = {
@@ -347,196 +763,338 @@ module.exports = {
 	getTargetNode: getTargetNode,
 	getRelativeEventPosition: getRelativeEventPosition,
 	isChildOf: isChildOf,
+	hasClass: hasClass,
+	closest: closest
 };
 
 /***/ }),
 
-/***/ 25:
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "./sources/utils/helpers.js":
+/*!**********************************!*\
+  !*** ./sources/utils/helpers.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__(26);
+var units = {
+	"second": 1,
+	"minute": 60,
+	"hour": 60 * 60,
+	"day": 60 * 60 * 24,
+	"week": 60 * 60 * 24 * 7,
+	"month": 60 * 60 * 24 * 30,
+	"quarter": 60 * 60 * 24 * 30 * 3,
+	"year": 60 * 60 * 24 * 365
+};
+function getSecondsInUnit(unit){
+	return units[unit] || units.hour;
+}
 
-
-/***/ }),
-
-/***/ 26:
-/***/ (function(module, exports, __webpack_require__) {
-
-gantt._tooltip = {};
-gantt._tooltip_class = "gantt_tooltip";
-gantt.config.tooltip_timeout = 30;//,
-gantt.config.tooltip_offset_y = 20;
-gantt.config.tooltip_offset_x = 10;//,
-	// timeout_to_hide: 50,
-	// delta_x: 15,
-	// delta_y: -20
-
-gantt._create_tooltip = function(){
-	if (!this._tooltip_html){
-		this._tooltip_html = document.createElement('div');
-		this._tooltip_html.className = gantt._tooltip_class;
-
-		this._waiAria.tooltipAttr(this._tooltip_html);
-
+function forEach(arr, callback) {
+	if (arr.forEach) {
+		arr.forEach(callback);
+	} else {
+		var workArray = arr.slice();
+		for (var i = 0; i < workArray.length; i++) {
+			callback(workArray[i], i);
+		}
 	}
+}
 
-	return this._tooltip_html;
-};
+function arrayMap(arr, callback) {
+	if (arr.map) {
+		return arr.map(callback);
+	} else {
+		var workArray = arr.slice();
+		var resArray = [];
 
-gantt._is_cursor_under_tooltip = function(mouse_pos, tooltip) {
-	if(mouse_pos.x >= tooltip.pos.x && mouse_pos.x <= (tooltip.pos.x + tooltip.width)) return true;
-	if(mouse_pos.y >= tooltip.pos.y && mouse_pos.y <= (tooltip.pos.y + tooltip.height)) return true;
-	return false;
-};
-
-gantt._show_tooltip = function(text, pos) {
-	if (gantt.config.touch && !gantt.config.touch_tooltip) return;
-
-	var tip = this._create_tooltip();
-
-	tip.innerHTML = text;
-	gantt.$task_data.appendChild(tip);
-
-	var width = tip.offsetWidth + 20;
-	var height = tip.offsetHeight + 40;
-	var max_height = this.$task.offsetHeight;
-	var max_width = this.$task.offsetWidth;
-	var scroll = this.getScrollState();
-
-	gantt._waiAria.tooltipVisibleAttr(tip);
-
-	//pos.x += scroll.x;
-	pos.y += scroll.y;
-
-	var mouse_pos = {
-		x: pos.x,
-		y: pos.y
-	};
-
-	pos.x += (gantt.config.tooltip_offset_x*1 || 0);
-	pos.y += (gantt.config.tooltip_offset_y*1 || 0);
-
-	pos.y = Math.min(Math.max(scroll.y, pos.y), scroll.y+max_height - height);
-	pos.x = Math.min(Math.max(scroll.x, pos.x), scroll.x+max_width - width);
-
-	if (gantt._is_cursor_under_tooltip(mouse_pos, {pos: pos, width: width, height: height})) {
-		if((mouse_pos.x+width) > (max_width + scroll.x)) pos.x = mouse_pos.x - (width - 20) - (gantt.config.tooltip_offset_x*1 || 0);
-		if((mouse_pos.y+height) > (max_height + scroll.y)) pos.y = mouse_pos.y - (height - 40) - (gantt.config.tooltip_offset_y*1 || 0);
+		for (var i = 0; i < workArray.length; i++) {
+			resArray.push(callback(workArray[i], i));
+		}
+		return resArray;
 	}
-
-	tip.style.left = pos.x + "px";
-	tip.style.top  = pos.y + "px";
-};
-
-gantt._hide_tooltip = function(){
-	if(this._tooltip_html)
-		this._waiAria.tooltipHiddenAttr(this._tooltip_html);
-
-	if (this._tooltip_html && this._tooltip_html.parentNode)
-		this._tooltip_html.parentNode.removeChild(this._tooltip_html);
-	this._tooltip_id = 0;
+}
 
 
-};
-
-gantt._is_tooltip = function(ev) {
-	var node = ev.target || ev.srcElement;
-	return gantt._is_node_child(node, function(node){
-		return (node.className == this._tooltip_class);
-	});
-};
-
-gantt._is_task_line = function(ev){
-	var node = ev.target || ev.srcElement;
-	return gantt._is_node_child(node, function(node){
-		return (node == this.$task_data);
-	});
-};
-
-gantt._is_node_child = function(node, condition){
-	var res = false;
-	while (node && !res) {
-		res = condition.call(gantt, node);
-		node = node.parentNode;
-	}
-	return res;
-};
-
-gantt._tooltip_pos = function(ev) {
-	if (ev.pageX || ev.pageY)
-		var pos = {x:ev.pageX, y:ev.pageY};
-
-	var d = (document.documentElement ||
-		document.body.parentNode ||
-		document.body);
-
-	var pos = {
-		x:ev.clientX + d.scrollLeft - d.clientLeft,
-		y:ev.clientY + d.scrollTop - d.clientTop
-	};
-
-	var domHelpers = __webpack_require__(0);
-
-	var box = domHelpers.getNodePosition(gantt.$task_data);
-	pos.x = pos.x - box.x;
-	pos.y = pos.y - box.y;
-	return pos;
-};
-
-gantt.attachEvent("onMouseMove", function(event_id, ev) { // (gantt event_id, browser event)
-	if(this.config.tooltip_timeout){
-		//making events survive timeout in ie
-		if(document.createEventObject && !document.createEvent)
-			ev = document.createEventObject(ev);
-
-		var delay = this.config.tooltip_timeout;
-
-		if(this._tooltip_id && !event_id){
-			if(!isNaN(this.config.tooltip_hide_timeout)){
-				delay = this.config.tooltip_hide_timeout;
+function arrayFind(arr, callback) {
+	if (arr.find) {
+		return arr.find(callback);
+	} else {
+		for (var i = 0; i < arr.length; i++) {
+			if (callback(arr[i], i)) {
+				return arr[i];
 			}
 		}
+	}
+}
 
-		clearTimeout(gantt._tooltip_ev_timer);
-		gantt._tooltip_ev_timer = setTimeout(function(){
-			gantt._init_tooltip(event_id, ev);
-		}, delay);
-
+// iframe-safe array type check instead of using instanceof
+function isArray(obj){
+	if(Array.isArray){
+		return Array.isArray(obj);
 	}else{
-		gantt._init_tooltip(event_id, ev);
+		// close enough
+		return (obj && obj.length !== undefined && obj.pop && obj.push);
 	}
-});
-gantt._init_tooltip = function(event_id, ev){
-	if (this._is_tooltip(ev)) return;
-	if (event_id == this._tooltip_id && !this._is_task_line(ev)) return;
-	if (!event_id)
-		return this._hide_tooltip();
+}
 
-	this._tooltip_id = event_id;
+// non-primitive string object, e.g. new String("abc")
+function isStringObject(obj){
+	return obj && typeof obj === "object"
+		&& Function.prototype.toString.call(obj.constructor) === "function String() { [native code] }";
+}
 
-	var task = this.getTask(event_id);
-	var text = this.templates.tooltip_text(task.start_date, task.end_date, task);
-	if (!text){
-		this._hide_tooltip();
-		return;
+// non-primitive number object, e.g. new Number(5)
+function isNumberObject(obj){
+	return obj && typeof obj === "object"
+		&& Function.prototype.toString.call(obj.constructor) === "function Number() { [native code] }";
+}
+
+// non-primitive number object, e.g. new Boolean(true)
+function isBooleanObject(obj){
+	return obj && typeof obj === "object"
+		&& Function.prototype.toString.call(obj.constructor) === "function Boolean() { [native code] }";
+}
+
+function isDate(obj) {
+	if (obj && typeof obj === "object") {
+		return !!(obj.getFullYear && obj.getMonth && obj.getDate);
+	} else {
+		return false;
 	}
-	this._show_tooltip(text, this._tooltip_pos(ev));
+}
+
+function arrayFilter(arr, callback) {
+	var result = [];
+
+	if (arr.filter) {
+		return arr.filter(callback);
+	} else {
+		for (var i = 0; i < arr.length; i++) {
+			if (callback(arr[i], i)) {
+				result[result.length] = arr[i];
+			}
+		}
+		return result;
+	}
+}
+
+function hashToArray(hash) {
+	var result = [];
+
+	for (var key in hash) {
+		if (hash.hasOwnProperty(key)) {
+			result.push(hash[key]);
+		}
+	}
+
+	return result;
+}
+
+function arraySome(arr, callback) {
+	if (arr.length === 0) return false;
+
+	for (var i = 0; i < arr.length; i++) {
+		if (callback(arr[i], i, arr)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function arrayDifference(arr, callback) {
+	return arrayFilter(arr, function(item, i) {
+		return !callback(item, i);
+	});
+}
+
+function throttle (callback, timeout) {
+	var wait = false;
+
+	return function () {
+		if (!wait) {
+			callback.apply(null, arguments);
+			wait = true;
+			setTimeout(function () {
+				wait = false;
+			}, timeout);
+		}
+	};
+}
+
+function delay (callback, timeout){
+	var timer;
+
+	var result = function() {
+		result.$cancelTimeout();
+		callback.$pending = true;
+		var args = Array.prototype.slice.call(arguments);
+		timer = setTimeout(function(){
+			callback.apply(this, args);
+			result.$pending = false;
+		}, timeout);
+	};
+	
+	result.$pending = false;
+	result.$cancelTimeout = function(){
+		clearTimeout(timer);
+		callback.$pending = false;
+	};
+	result.$execute = function(){
+		callback();
+		callback.$cancelTimeout();
+	};
+
+	return result;
+}
+
+function sortArrayOfHash(arr, field, desc) {
+	var compare = function(a, b) {
+		return a < b;
+	};
+
+	arr.sort(function(a, b) {
+		if (a[field] === b[field]) return 0;
+
+		return desc ? compare(a[field], b[field]) : compare(b[field], a[field]);
+	});
+}
+
+function objectKeys(obj) {
+	if (Object.keys) {
+		return Object.keys(obj);
+	}
+	var result = [];
+	var key;
+	for (key in obj) {
+		if (Object.prototype.hasOwnProperty.call(obj, key)) {
+			result.push(key);
+		}
+	}
+	return result;
+}
+
+module.exports = {
+	getSecondsInUnit: getSecondsInUnit,
+	forEach: forEach,
+	arrayMap: arrayMap,
+	arrayFind: arrayFind,
+	arrayFilter: arrayFilter,
+	arrayDifference: arrayDifference,
+	arraySome: arraySome,
+	hashToArray: hashToArray,
+	sortArrayOfHash: sortArrayOfHash,
+	throttle: throttle,
+	isArray: isArray,
+	isDate: isDate,
+	isStringObject: isStringObject,
+	isNumberObject: isNumberObject,
+	isBooleanObject: isBooleanObject,
+	delay: delay,
+	objectKeys: objectKeys
 };
-gantt.attachEvent("onMouseLeave", function(ev){
-	if (gantt._is_tooltip(ev)) return;
-	this._hide_tooltip();
-});
 
-// gantt.attachEvent("onBeforeDrag", function() {
-// 	gantt._tooltip.hide();
-// 	return true;
-// });
-// gantt.attachEvent("onEventDeleted", function() {
-// 	gantt._tooltip.hide();
-// 	return true;
-// });
+/***/ }),
 
+/***/ "./sources/utils/utils.js":
+/*!********************************!*\
+  !*** ./sources/utils/utils.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var helpers = __webpack_require__(/*! ./helpers */ "./sources/utils/helpers.js");
+
+function copy(object) {
+	var i, result; // iterator, types array, result
+
+	if (object && typeof object == "object") {
+
+		switch (true){
+			case (helpers.isDate(object)):
+				result = new Date(object);
+				break;
+			case (helpers.isArray(object)):
+				result = new Array(object.length);
+				for(i = 0; i < object.length; i++){
+					result[i] = copy(object[i]);
+				}
+				break;
+			case (helpers.isStringObject(object)):
+				result = new String(object);
+				break;
+			case (helpers.isNumberObject(object)):
+				result = new Number(object);
+				break;
+			case (helpers.isBooleanObject(object)):
+				result = new Boolean(object);
+				break;
+			default:
+				result = {};
+				for (i in object) {
+					if (Object.prototype.hasOwnProperty.apply(object, [i]))
+						result[i] = copy(object[i]);
+				}
+			break;
+		}
+	}
+	return result || object;
+}
+
+function mixin (target, source, force){
+	for (var f in source)
+		if (((target[f] === undefined) || force)) target[f]=source[f];
+	return target;
+}
+
+function defined(obj) {
+	return typeof(obj) != "undefined";
+}
+
+var seed;
+function uid() {
+	if (!seed)
+		seed = (new Date()).valueOf();
+
+	seed++;
+	return seed;
+}
+
+//creates function with specified "this" pointer
+function bind(functor, object){
+	if(functor.bind)
+		return functor.bind(object);
+	else
+		return function(){ return functor.apply(object,arguments); };
+}
+
+function event(el, event, handler, capture){
+	if (el.addEventListener)
+		el.addEventListener(event, handler, capture === undefined ? false : capture);
+
+	else if (el.attachEvent)
+		el.attachEvent("on"+event, handler);
+}
+
+function eventRemove(el, event, handler, capture){
+	if (el.removeEventListener)
+		el.removeEventListener(event, handler, capture === undefined ? false : capture);
+
+	else if (el.detachEvent)
+		el.detachEvent("on"+event, handler);
+}
+
+module.exports = {
+	copy: copy,
+	defined: defined,
+	mixin: mixin,
+	uid: uid,
+	bind: bind,
+	event: event,
+	eventRemove: eventRemove
+};
 
 /***/ })
 
 /******/ });
+});

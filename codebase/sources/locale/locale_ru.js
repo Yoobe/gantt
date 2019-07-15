@@ -1,13 +1,23 @@
-/*!
- * @license
- * 
- * dhtmlxGantt v.5.0.5 Stardard
- * This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
- * 
- * (c) Dinamenta, UAB.
- * 
- */
-/******/ (function(modules) { // webpackBootstrap
+/*
+@license
+
+dhtmlxGantt v.6.1.7 Standard
+This software is covered by GPL license. You also can obtain Commercial or Enterprise license to use it in non-GPL project - please contact sales@dhtmlx.com. Usage without proper license is prohibited.
+
+(c) Dinamenta, UAB.
+
+*/
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -45,12 +55,32 @@
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -66,30 +96,27 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/codebase/sources/";
+/******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 52);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./sources/locale/locale_ru.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 52:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(53);
-
-
-/***/ }),
-
-/***/ 53:
+/***/ "./sources/locale/locale_ru.js":
+/*!*************************************!*\
+  !*** ./sources/locale/locale_ru.js ***!
+  \*************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
 gantt.locale = {
 	date: {
 		month_full: ["Январь", "Февраль", "Март", "Апрель", "Maй", "Июнь", "Июль", "Август", "Сентябрь", "Oктябрь", "Ноябрь", "Декабрь"],
 		month_short: ["Янв", "Фев", "Maр", "Aпр", "Maй", "Июн", "Июл", "Aвг", "Сен", "Окт", "Ноя", "Дек"],
-		day_full: [ "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
+		day_full: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
 		day_short: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 	},
 	labels: {
@@ -108,18 +135,18 @@ gantt.locale = {
 		confirm_deleting: "Событие будет удалено безвозвратно, продолжить?",
 		section_description: "Описание",
 		section_time: "Период времени",
-		section_type:"Тип",
+		section_type: "Тип",
 		/* grid columns */
 
-		column_wbs : "ИСР",
-		column_text : "Задача",
-		column_start_date : "Начало",
-		column_duration : "Длительность",
-		column_add : "",
+		column_wbs: "ИСР",
+		column_text: "Задача",
+		column_start_date: "Начало",
+		column_duration: "Длительность",
+		column_add: "",
 
 		/* link confirmation */
 		link: "Связь",
-		confirm_link_deleting:"будет удалена",
+		confirm_link_deleting: "будет удалена",
 		link_start: " (начало)",
 		link_end: " (конец)",
 
@@ -137,7 +164,24 @@ gantt.locale = {
 
 		/* message popup */
 		message_ok: "OK",
-		message_cancel: "Отменить"
+		message_cancel: "Отменить",
+
+		/* constraints */
+		section_constraint: "Constraint",
+		constraint_type: "Constraint type",
+		constraint_date: "Constraint date",
+		asap: "As Soon As Possible",
+		alap: "As Late As Possible",
+		snet: "Start No Earlier Than",
+		snlt: "Start No Later Than",
+		fnet: "Finish No Earlier Than",
+		fnlt: "Finish No Later Than",
+		mso: "Must Start On",
+		mfo: "Must Finish On",
+
+		/* resource control */
+		resources_filter_placeholder: "начните вводить слово для фильтрации",
+		resources_filter_label: "спрятать не установленные"
 	}
 };
 
@@ -146,3 +190,4 @@ gantt.locale = {
 /***/ })
 
 /******/ });
+});

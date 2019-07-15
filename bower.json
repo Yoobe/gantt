@@ -1,6 +1,6 @@
 {
   "name": "gantt",
-  "version": "5.0.5",
+  "version": "6.1.7",
   "homepage": "https://dhtmlx.com/docs/products/dhtmlxGantt/",
   "description": "An open source JavaScript Gantt chart that helps you illustrate a project schedule in a nice-looking chart.",
   "main": [
@@ -8,15 +8,15 @@
     "codebase/dhtmlxgantt.css"
   ],
   "keywords": [
+    "gantt",
+    "chart",
+    "gantt chart",
     "calendar",
     "scheduler",
     "dhtmlx",
+    "dhtmlxgantt",
     "timeline",
-    "agenda",
-    "month",
-    "day",
-    "week",
-    "year"
+    "browser"
   ],
-  "license": "GPL"  
+  "license": "GPL"
 }
